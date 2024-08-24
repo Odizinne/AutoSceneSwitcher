@@ -25,7 +25,6 @@ public:
 private slots:
     void onStartupCheckBoxStateChanged();
     void toggleTokenView();
-    void quitApplication();
 
 private:
     Ui::AutoSceneSwitcher *ui;
@@ -60,7 +59,6 @@ private:
     QMap<QString, QString> sceneIdMap;
     bool switched;
     bool connecting;
-    bool exiting;
 };
 
 #endif // AUTOSCENESWITCHER_H

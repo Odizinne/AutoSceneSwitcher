@@ -141,7 +141,7 @@ void AutoSceneSwitcher::createTrayIconAndMenu()
     connect(showAction, &QAction::triggered, this, &AutoSceneSwitcher::showMainWindow);
 
     QAction *quitAction = menu->addAction("Quit");
-    connect(quitAction, &QAction::triggered, this, &AutoSceneSwitcher::quitApplication);
+    connect(quitAction, &QAction::triggered, this, &QApplication::quit);
 
     trayIcon->setContextMenu(menu);
     trayIcon->show();
@@ -151,12 +151,6 @@ void AutoSceneSwitcher::showMainWindow()
 {
     this->show();
     this->activateWindow();
-}
-
-void AutoSceneSwitcher::quitApplication()
-{
-    exiting = true;
-    QApplication::quit();
 }
 
 bool AutoSceneSwitcher::isProcessRunning(const QString& processName)
@@ -307,9 +301,7 @@ void AutoSceneSwitcher::onDisconnected()
 
     toggleUi(false);
 
-    while (isProcessRunning("Streamlabs OBS.exe") && !exiting) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ui->connectionStatusLabel->setText("Not connected to Streamlabs client API ❌");
 }
 
