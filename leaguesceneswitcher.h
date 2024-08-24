@@ -10,6 +10,10 @@
 #include <QMap>
 #include <QString>
 
+namespace Ui {
+class LeagueSceneSwitcher;
+}
+
 class LeagueSceneSwitcher : public QMainWindow
 {
     Q_OBJECT
@@ -19,6 +23,7 @@ public:
     ~LeagueSceneSwitcher();
 
 private:
+    Ui::LeagueSceneSwitcher *ui;
     bool prepareConfig();
     void loadConfig();
     void createTrayIconAndMenu();
@@ -31,14 +36,24 @@ private:
     void onConnected();
     void onTextMessageReceived(QString message);
     void getScenes();
+    void saveSettings();
+    void loadSettings();
+    void applySettings();
+    void setupUiConnections();
+    void populateComboBoxes();
+    void toggleUi(bool state);
+    void showMainWindow();
 
+    bool firstRun;
+    QJsonObject settings;
+    static const QString settingsFile;
     QSystemTrayIcon *trayIcon;
     QTimer *timer;
     QWebSocket webSocket;
     QString streamlabsToken;
     QString clientSceneName;
     QString gameSceneName;
-    QMap<QString, QString> sceneIdMap; // Maps scene names to their IDs
+    QMap<QString, QString> sceneIdMap;
     bool switched;
 };
 
