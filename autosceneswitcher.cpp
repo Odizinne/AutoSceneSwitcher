@@ -120,7 +120,6 @@ void AutoSceneSwitcher::saveSettings()
 
 void AutoSceneSwitcher::toggleTokenView()
 {
-    qDebug() << "Toggling token view.";
     if (ui->tokenLineEdit->echoMode() == QLineEdit::Password) {
         ui->tokenLineEdit->setEchoMode(QLineEdit::Normal);
         ui->toggleTokenButton->setText("Hide");
@@ -301,7 +300,6 @@ void AutoSceneSwitcher::onConnected()
 void AutoSceneSwitcher::onDisconnected()
 {
     connecting = false;
-    qDebug() << "Disconnected from Streamlabs OBS.";
 
     disconnect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
     disconnect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
