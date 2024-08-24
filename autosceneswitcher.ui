@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LeagueSceneSwitcher</class>
- <widget class="QMainWindow" name="LeagueSceneSwitcher">
+ <class>AutoSceneSwitcher</class>
+ <widget class="QMainWindow" name="AutoSceneSwitcher">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>344</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -22,16 +22,16 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="5" column="0">
-     <widget class="QFrame" name="gameFrame">
+     <widget class="QFrame" name="clientFrame">
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Shadow::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout_4">
+      <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="label_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -45,12 +45,12 @@
           </size>
          </property>
          <property name="text">
-          <string>Scene to revert</string>
+          <string>Scene to activate</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="clientLineEdit">
+        <widget class="QLineEdit" name="gameLineEdit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -60,7 +60,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>30</height>
+           <height>25</height>
           </size>
          </property>
         </widget>
@@ -100,7 +100,7 @@
          <property name="minimumSize">
           <size>
            <width>100</width>
-           <height>30</height>
+           <height>25</height>
           </size>
          </property>
          <property name="text">
@@ -119,7 +119,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>30</height>
+           <height>25</height>
           </size>
          </property>
         </widget>
@@ -128,16 +128,52 @@
      </widget>
     </item>
     <item row="4" column="0">
-     <widget class="QFrame" name="clientFrame">
+     <widget class="QLabel" name="sceneSettingsLabel">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Scene settings</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>General settings</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QFrame" name="gameFrame">
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Shadow::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3">
+      <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="label_3">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -151,12 +187,12 @@
           </size>
          </property>
          <property name="text">
-          <string>Scene to activate</string>
+          <string>Scene to revert</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="gameLineEdit">
+        <widget class="QLineEdit" name="clientLineEdit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -166,28 +202,12 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>30</height>
+           <height>25</height>
           </size>
          </property>
         </widget>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="noConnectionLabel">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Not conneted to Streamlabs client API</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
      </widget>
     </item>
     <item row="1" column="0">
@@ -229,7 +249,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>30</height>
+           <height>25</height>
           </size>
          </property>
         </widget>
@@ -237,40 +257,61 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_5">
+    <item row="7" column="0">
+     <widget class="QLabel" name="noConnectionLabel">
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>30</height>
+        <height>25</height>
        </size>
       </property>
-      <property name="font">
-       <font>
-        <bold>true</bold>
-       </font>
-      </property>
       <property name="text">
-       <string>General settings</string>
+       <string>Not conneted to Streamlabs client API</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
     </item>
     <item row="3" column="0">
-     <widget class="QLabel" name="sceneSettingsLabel">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>30</height>
-       </size>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
       </property>
-      <property name="font">
-       <font>
-        <bold>true</bold>
-       </font>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
-      <property name="text">
-       <string>Scene settings</string>
-      </property>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Run at startup</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="startupCheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LayoutDirection::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>

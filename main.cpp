@@ -1,4 +1,4 @@
-#include "leaguesceneswitcher.h"
+#include "autosceneswitcher.h"
 
 #include <QApplication>
 
@@ -6,6 +6,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setQuitOnLastWindowClosed(false);
-    LeagueSceneSwitcher w;
+    AutoSceneSwitcher w;
     return a.exec();
 }

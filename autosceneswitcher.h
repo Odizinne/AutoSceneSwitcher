@@ -1,5 +1,5 @@
-#ifndef LEAGUESCENESWITCHER_H
-#define LEAGUESCENESWITCHER_H
+#ifndef AUTOSCENESWITCHER_H
+#define AUTOSCENESWITCHER_H
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -11,19 +11,22 @@
 #include <QString>
 
 namespace Ui {
-class LeagueSceneSwitcher;
+class AutoSceneSwitcher;
 }
 
-class LeagueSceneSwitcher : public QMainWindow
+class AutoSceneSwitcher : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit LeagueSceneSwitcher(QWidget *parent = nullptr);
-    ~LeagueSceneSwitcher();
+    explicit AutoSceneSwitcher(QWidget *parent = nullptr);
+    ~AutoSceneSwitcher();
+
+private slots:
+    void onStartupCheckBoxStateChanged();
 
 private:
-    Ui::LeagueSceneSwitcher *ui;
+    Ui::AutoSceneSwitcher *ui;
     bool prepareConfig();
     void loadConfig();
     void createTrayIconAndMenu();
@@ -57,4 +60,4 @@ private:
     bool switched;
 };
 
-#endif // LEAGUESCENESWITCHER_H
+#endif // AUTOSCENESWITCHER_H

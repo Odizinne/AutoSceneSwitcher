@@ -1,12 +1,11 @@
-#include "leaguesceneswitcher.h"
-#include "ui_leaguesceneswitcher.h"
-
+#include "autosceneswitcher.h"
+#include "ui_autosceneswitcher.h"
+#include "shortcutmanager.h"
 #include <QApplication>
 #include <QMenu>
 #include <windows.h>
 #include <tlhelp32.h>
 #include <QString>
-#include <QDebug>
 #include <QIcon>
 #include <QTimer>
 #include <QJsonDocument>
@@ -16,12 +15,12 @@
 #include <QStandardPaths>
 #include <QDir>
 
-const QString LeagueSceneSwitcher::settingsFile =
+const QString AutoSceneSwitcher::settingsFile =
     QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/AutoSceneSwitcher/settings.json";
 
-LeagueSceneSwitcher::LeagueSceneSwitcher(QWidget *parent)
+AutoSceneSwitcher::AutoSceneSwitcher(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::LeagueSceneSwitcher)
+    , ui(new Ui::AutoSceneSwitcher)
     , firstRun(false)
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
@@ -37,7 +36,7 @@ LeagueSceneSwitcher::LeagueSceneSwitcher(QWidget *parent)
     }
 }
 
-LeagueSceneSwitcher::~LeagueSceneSwitcher()
+AutoSceneSwitcher::~AutoSceneSwitcher()
 {
     trayIcon->hide();
     timer->stop();
@@ -45,21 +44,27 @@ LeagueSceneSwitcher::~LeagueSceneSwitcher()
     delete ui;
 }
 
-void LeagueSceneSwitcher::setupUiConnections()
+void AutoSceneSwitcher::setupUiConnections()
 {
-    connect(ui->tokenLineEdit, &QLineEdit::textChanged, this, &LeagueSceneSwitcher::saveSettings);
-    connect(ui->clientLineEdit, &QLineEdit::textChanged, this, &LeagueSceneSwitcher::saveSettings);
-    connect(ui->gameLineEdit, &QLineEdit::textChanged, this, &LeagueSceneSwitcher::saveSettings);
-    connect(ui->processLineEdit, &QLineEdit::textChanged, this, &LeagueSceneSwitcher::saveSettings);
+    connect(ui->tokenLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
+    connect(ui->clientLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
+    connect(ui->gameLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
+    connect(ui->processLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
+    connect(ui->startupCheckBox, &QCheckBox::stateChanged, this, &AutoSceneSwitcher::onStartupCheckBoxStateChanged);
 
     timer->setInterval(1000);
-    connect(timer, &QTimer::timeout, this, &LeagueSceneSwitcher::checkGamePresence);
+    connect(timer, &QTimer::timeout, this, &AutoSceneSwitcher::checkGamePresence);
     timer->start();
 
     ui->tokenLineEdit->setEchoMode(QLineEdit::Password);
 }
 
-void LeagueSceneSwitcher::loadSettings()
+void AutoSceneSwitcher::onStartupCheckBoxStateChanged()
+{
+    manageShortcut(ui->startupCheckBox->isChecked());
+}
+
+void AutoSceneSwitcher::loadSettings()
 {
     QDir settingsDir(QFileInfo(settingsFile).absolutePath());
     if (!settingsDir.exists()) {
@@ -79,15 +84,16 @@ void LeagueSceneSwitcher::loadSettings()
     applySettings();
 }
 
-void LeagueSceneSwitcher::applySettings()
+void AutoSceneSwitcher::applySettings()
 {
     ui->tokenLineEdit->setText(settings.value("streamlabsToken").toString());
     ui->clientLineEdit->setText(settings.value("clientScene").toString());
     ui->gameLineEdit->setText(settings.value("gameScene").toString());
     ui->processLineEdit->setText(settings.value("targetProcess").toString());
+    ui->startupCheckBox->setChecked(isShortcutPresent());
 }
 
-void LeagueSceneSwitcher::saveSettings()
+void AutoSceneSwitcher::saveSettings()
 {
     settings["streamlabsToken"] = ui->tokenLineEdit->text();
     settings["clientScene"] = ui->clientLineEdit->text();
@@ -100,10 +106,9 @@ void LeagueSceneSwitcher::saveSettings()
         file.write(doc.toJson());
         file.close();
     }
-    qDebug() << "Settings saved.";
 }
 
-void LeagueSceneSwitcher::createTrayIconAndMenu()
+void AutoSceneSwitcher::createTrayIconAndMenu()
 {
     QIcon icon(":/icons/icon.png");
     trayIcon->setIcon(icon);
@@ -112,7 +117,7 @@ void LeagueSceneSwitcher::createTrayIconAndMenu()
     QMenu *menu = new QMenu(this);
 
     QAction *showAction = menu->addAction("Show");
-    connect(showAction, &QAction::triggered, this, &LeagueSceneSwitcher::showMainWindow);
+    connect(showAction, &QAction::triggered, this, &AutoSceneSwitcher::showMainWindow);
 
     QAction *quitAction = menu->addAction("Quit");
     connect(quitAction, &QAction::triggered, this, &QApplication::quit);
@@ -121,17 +126,16 @@ void LeagueSceneSwitcher::createTrayIconAndMenu()
     trayIcon->show();
 }
 
-void LeagueSceneSwitcher::showMainWindow()
+void AutoSceneSwitcher::showMainWindow()
 {
     this->show();
     this->activateWindow();
 }
 
-bool LeagueSceneSwitcher::isProcessRunning(const QString& processName)
+bool AutoSceneSwitcher::isProcessRunning(const QString& processName)
 {
     HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (hProcessSnap == INVALID_HANDLE_VALUE) {
-        qWarning() << "Failed to create process snapshot.";
         return false;
     }
 
@@ -140,7 +144,6 @@ bool LeagueSceneSwitcher::isProcessRunning(const QString& processName)
 
     if (!Process32First(hProcessSnap, &pe32)) {
         CloseHandle(hProcessSnap);
-        qWarning() << "Failed to retrieve the first process.";
         return false;
     }
 
@@ -156,7 +159,7 @@ bool LeagueSceneSwitcher::isProcessRunning(const QString& processName)
     return found;
 }
 
-void LeagueSceneSwitcher::setSceneById(const QString &sceneId)
+void AutoSceneSwitcher::setSceneById(const QString &sceneId)
 {
     QJsonObject params;
     params["resource"] = "ScenesService";
@@ -171,39 +174,28 @@ void LeagueSceneSwitcher::setSceneById(const QString &sceneId)
     QJsonDocument doc(setSceneMessage);
     QString jsonString = QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
 
-    qDebug() << "Sending setScene message:" << jsonString;
     webSocket.sendTextMessage(jsonString);
 }
 
-void LeagueSceneSwitcher::setClientScene()
+void AutoSceneSwitcher::setClientScene()
 {
     QString clientSceneName = ui->clientLineEdit->text().trimmed();
-    qDebug() << "Attempting to set client scene with name:" << clientSceneName;
-
     if (sceneIdMap.contains(clientSceneName)) {
         QString sceneId = sceneIdMap[clientSceneName];
         setSceneById(sceneId);
-        qDebug() << "Client scene set to:" << clientSceneName;
-    } else {
-        qWarning() << "Client scene name not found in map.";
     }
 }
 
-void LeagueSceneSwitcher::setGameScene()
+void AutoSceneSwitcher::setGameScene()
 {
     QString gameSceneName = ui->gameLineEdit->text().trimmed();
-    qDebug() << "Attempting to set game scene with name:" << gameSceneName;
-
     if (sceneIdMap.contains(gameSceneName)) {
         QString sceneId = sceneIdMap[gameSceneName];
         setSceneById(sceneId);
-        qDebug() << "Game scene set to:" << gameSceneName;
-    } else {
-        qWarning() << "Game scene name not found in map.";
     }
 }
 
-void LeagueSceneSwitcher::toggleUi(bool state)
+void AutoSceneSwitcher::toggleUi(bool state)
 {
     ui->sceneSettingsLabel->setVisible(state);
     ui->clientFrame->setVisible(state);
@@ -212,7 +204,7 @@ void LeagueSceneSwitcher::toggleUi(bool state)
     this->adjustSize();
 }
 
-void LeagueSceneSwitcher::checkGamePresence()
+void AutoSceneSwitcher::checkGamePresence()
 {
 
     if (ui->tokenLineEdit->text().isEmpty()) {
@@ -230,32 +222,27 @@ void LeagueSceneSwitcher::checkGamePresence()
         toggleUi(false);
         connectToStreamlabs();
     }
-    toggleUi(true);
 
     QString targetProcess = ui->processLineEdit->text();
     if (isProcessRunning(targetProcess) && !switched && !ui->processLineEdit->text().isEmpty() && !ui->processLineEdit->hasFocus()) {
-        qInfo() << targetProcess << "is running.";
         setGameScene();
         switched = true;
     } else if (!isProcessRunning(targetProcess) && switched) {
-        qInfo() << targetProcess << "is not running.";
         setClientScene();
         switched = false;
     }
 }
 
-void LeagueSceneSwitcher::connectToStreamlabs()
+void AutoSceneSwitcher::connectToStreamlabs()
 {
-    connect(&webSocket, &QWebSocket::connected, this, &LeagueSceneSwitcher::onConnected);
-    connect(&webSocket, &QWebSocket::textMessageReceived, this, &LeagueSceneSwitcher::onTextMessageReceived);
+    connect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
+    connect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
 
     webSocket.open(QUrl("ws://127.0.0.1:59650/api/websocket"));
 }
 
-void LeagueSceneSwitcher::onConnected()
+void AutoSceneSwitcher::onConnected()
 {
-    qDebug() << "Connected to Streamlabs OBS WebSocket.";
-
     QJsonObject authParams;
     authParams["resource"] = "TcpServerService";
     authParams["args"] = QJsonArray{ ui->tokenLineEdit->text() };
@@ -269,13 +256,13 @@ void LeagueSceneSwitcher::onConnected()
     QJsonDocument doc(authMessage);
     QString jsonString = QString::fromUtf8(doc.toJson(QJsonDocument::Compact)) + "\n";
 
-    qDebug() << "Sending authentication message: " << jsonString;
     webSocket.sendTextMessage(jsonString);
 
     getScenes();
+    toggleUi(true);
 }
 
-void LeagueSceneSwitcher::getScenes()
+void AutoSceneSwitcher::getScenes()
 {
     QJsonObject params;
     params["resource"] = "ScenesService";
@@ -289,17 +276,13 @@ void LeagueSceneSwitcher::getScenes()
     QJsonDocument doc(getScenesMessage);
     QString jsonString = QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
 
-    qDebug() << "Sending getScenes message:" << jsonString;
     webSocket.sendTextMessage(jsonString);
 }
 
-void LeagueSceneSwitcher::onTextMessageReceived(QString message)
+void AutoSceneSwitcher::onTextMessageReceived(QString message)
 {
-    qDebug() << "Message received from Streamlabs OBS:" << message;
-
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
     if (!doc.isObject()) {
-        qWarning() << "Received message is not a valid JSON object.";
         return;
     }
 
@@ -308,7 +291,6 @@ void LeagueSceneSwitcher::onTextMessageReceived(QString message)
     if (jsonObj.contains("id") && jsonObj["id"].toInt() == 31) {
         if (jsonObj.contains("result")) {
             QJsonArray scenes = jsonObj["result"].toArray();
-            qDebug() << "Scenes available:";
             sceneIdMap.clear();
 
             for (const QJsonValue &sceneValue : scenes) {
@@ -317,12 +299,8 @@ void LeagueSceneSwitcher::onTextMessageReceived(QString message)
                 QString sceneName = sceneObj["name"].toString();
 
                 sceneIdMap[sceneName] = sceneId;
-
-                qDebug() << "Scene ID:" << sceneId << "Scene Name:" << sceneName;
             }
         }
-    } else {
-        qWarning() << "Unexpected message ID or method.";
     }
 }
 

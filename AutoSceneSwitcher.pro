@@ -9,18 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    leaguesceneswitcher.cpp
+    autosceneswitcher.cpp \
+    shortcutmanager.cpp \
+    main.cpp
 
 HEADERS += \
-    leaguesceneswitcher.h
+    autosceneswitcher.h \
+    shortcutmanager.h
 
 RESOURCES += \
     Resources/resources.qrc
 
 RC_FILE = Resources/appicon.rc
 
-LIBS += -luser32
+LIBS += -luser32 -lole32
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -28,4 +30,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
-    leaguesceneswitcher.ui
+    autosceneswitcher.ui
