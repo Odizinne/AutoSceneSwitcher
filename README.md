@@ -26,7 +26,9 @@ Ex: `League of legends.exe`
 
 - Set IP/Port
 
-If you are using Streamlabs on the same machine as AutoSceneSwitcher, do not modify them.  
+In most case you should not modify them.  
+Only useful if you're running Streamlabs and AutoSceneSwitcher on different devices.  
+
 Defaults:  
 `IP`: 127.0.0.1  
 `port`: 59650
