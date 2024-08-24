@@ -42,7 +42,6 @@ AutoSceneSwitcher::AutoSceneSwitcher(QWidget *parent)
 
 AutoSceneSwitcher::~AutoSceneSwitcher()
 {
-    trayIcon->hide();
     timer->stop();
     webSocket.close();
     delete ui;
@@ -54,7 +53,10 @@ void AutoSceneSwitcher::setupUiConnections()
     connect(ui->clientLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->gameLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->processLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
+    connect(ui->IPLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
+    connect(ui->portSpinBox, &QSpinBox::valueChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->startupCheckBox, &QCheckBox::stateChanged, this, &AutoSceneSwitcher::onStartupCheckBoxStateChanged);
+    connect(ui->toggleTokenButton, &QToolButton::clicked, this, &AutoSceneSwitcher::toggleTokenView);
 
     timer->setInterval(1000);
     connect(timer, &QTimer::timeout, this, &AutoSceneSwitcher::checkGamePresence);
@@ -94,6 +96,8 @@ void AutoSceneSwitcher::applySettings()
     ui->clientLineEdit->setText(settings.value("clientScene").toString());
     ui->gameLineEdit->setText(settings.value("gameScene").toString());
     ui->processLineEdit->setText(settings.value("targetProcess").toString());
+    ui->IPLineEdit->setText(settings.value("ipAddress").toString());
+    ui->portSpinBox->setValue(settings.value("port").toInt());
     ui->startupCheckBox->setChecked(isShortcutPresent());
 }
 
@@ -103,12 +107,26 @@ void AutoSceneSwitcher::saveSettings()
     settings["clientScene"] = ui->clientLineEdit->text();
     settings["gameScene"] = ui->gameLineEdit->text();
     settings["targetProcess"] = ui->processLineEdit->text();
+    settings["ipAddress"] = ui->IPLineEdit->text();
+    settings["port"] = ui->portSpinBox->value();
 
     QFile file(settingsFile);
     if (file.open(QIODevice::WriteOnly)) {
         QJsonDocument doc(settings);
         file.write(doc.toJson());
         file.close();
+    }
+}
+
+void AutoSceneSwitcher::toggleTokenView()
+{
+    qDebug() << "Toggling token view.";
+    if (ui->tokenLineEdit->echoMode() == QLineEdit::Password) {
+        ui->tokenLineEdit->setEchoMode(QLineEdit::Normal);
+        ui->toggleTokenButton->setText("Hide");
+    } else {
+        ui->tokenLineEdit->setEchoMode(QLineEdit::Password);
+        ui->toggleTokenButton->setText("Show");
     }
 }
 
@@ -124,7 +142,7 @@ void AutoSceneSwitcher::createTrayIconAndMenu()
     connect(showAction, &QAction::triggered, this, &AutoSceneSwitcher::showMainWindow);
 
     QAction *quitAction = menu->addAction("Quit");
-    connect(quitAction, &QAction::triggered, this, &QApplication::quit);
+    connect(quitAction, &QAction::triggered, this, &AutoSceneSwitcher::quitApplication);
 
     trayIcon->setContextMenu(menu);
     trayIcon->show();
@@ -134,6 +152,12 @@ void AutoSceneSwitcher::showMainWindow()
 {
     this->show();
     this->activateWindow();
+}
+
+void AutoSceneSwitcher::quitApplication()
+{
+    exiting = true;
+    QApplication::quit();
 }
 
 bool AutoSceneSwitcher::isProcessRunning(const QString& processName)
@@ -285,7 +309,7 @@ void AutoSceneSwitcher::onDisconnected()
 
     toggleUi(false);
 
-    while (isProcessRunning("Streamlabs OBS.exe")) {
+    while (isProcessRunning("Streamlabs OBS.exe") && !exiting) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
     ui->connectionStatusLabel->setText("Not connected to Streamlabs client API ❌");

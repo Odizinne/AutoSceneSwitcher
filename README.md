@@ -41,3 +41,7 @@ Type the exact scene name.
 You're good to go.
 
 You can close the window, AutoSceneSwitcher will run in the background.
+
+## To-do
+
+- Fix freeze when attempting to connect with wrong IP / Port
