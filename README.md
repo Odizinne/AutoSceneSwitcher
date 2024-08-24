@@ -2,6 +2,12 @@
 
 Switch Streamlabs scene based on process presence
 
+![image](assets/screenshot.png)
+
+## Requirements
+
+- [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+
 ## Download
 
 You can grab latest release [here](https://github.com/Odizinne/AutoSceneSwitcher/releases/latest).
@@ -20,7 +26,7 @@ Ex: `League of legends.exe`
 
 - Set your scenes
 
-`Scene to activate`: This scene will be set as active when process is found. 
+`Scene to activate`: This scene will be set as active when process is found.  
 `Scene to revert`: this scene will be set as active when process is no more found.
 
 Type the exact scene name.
