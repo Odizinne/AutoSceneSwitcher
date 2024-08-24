@@ -4,7 +4,7 @@ Switch Streamlabs scene based on process presence
 
 ## Download
 
-You can grab latest release [here]()
+You can grab latest release [here](https://github.com/Odizinne/AutoSceneSwitcher/releases/latest).
 
 ## Configuration
 
