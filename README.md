@@ -24,6 +24,13 @@ Copy the API token and paste it inside `Streamlabs token`
 Type the process name you're looking for to automate scene switch
 Ex: `League of legends.exe`
 
+- Set IP/Port
+
+If you are using Streamlabs on the same machine as AutoSceneSwitcher, do not modify them.  
+Defaults:  
+`IP`: 127.0.0.1  
+`port`: 59650
+
 - Set your scenes
 
 `Scene to activate`: This scene will be set as active when process is found.  
