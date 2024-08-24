@@ -27,8 +27,6 @@ private slots:
 
 private:
     Ui::AutoSceneSwitcher *ui;
-    bool prepareConfig();
-    void loadConfig();
     void createTrayIconAndMenu();
     bool isProcessRunning(const QString& processName);
     void setSceneById(const QString &sceneId);
