@@ -33,3 +33,4 @@ Type the exact scene name.
 
 You're good to go.
 
+You can close the window, AutoSceneSwitcher will run in the background.
