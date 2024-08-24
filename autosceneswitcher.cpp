@@ -1,6 +1,8 @@
 #include "autosceneswitcher.h"
 #include "ui_autosceneswitcher.h"
 #include "shortcutmanager.h"
+#include <thread>
+#include <chrono>
 #include <QApplication>
 #include <QMenu>
 #include <windows.h>
@@ -25,12 +27,14 @@ AutoSceneSwitcher::AutoSceneSwitcher(QWidget *parent)
     , trayIcon(new QSystemTrayIcon(this))
     , timer(new QTimer(this))
     , switched(false)
+    , connecting(false)
 {
     ui->setupUi(this);
     toggleUi(false);
     loadSettings();
     setupUiConnections();
     createTrayIconAndMenu();
+    toggleUi(false);
     if (firstRun) {
         this->show();
     }
@@ -197,29 +201,24 @@ void AutoSceneSwitcher::setGameScene()
 
 void AutoSceneSwitcher::toggleUi(bool state)
 {
-    ui->sceneSettingsLabel->setVisible(state);
-    ui->clientFrame->setVisible(state);
-    ui->gameFrame->setVisible(state);
-    ui->noConnectionLabel->setVisible(!state);
-    this->adjustSize();
+    ui->sceneSettingsLabel->setEnabled(state);
+    ui->clientFrame->setEnabled(state);
+    ui->gameFrame->setEnabled(state);
 }
 
 void AutoSceneSwitcher::checkGamePresence()
 {
 
     if (ui->tokenLineEdit->text().isEmpty()) {
-        toggleUi(false);
         return;
     }
 
     QString streamlabsProcessName = "Streamlabs OBS.exe";
     if (!isProcessRunning(streamlabsProcessName)) {
-        toggleUi(false);
         return;
     }
 
     if (!webSocket.isValid()) {
-        toggleUi(false);
         connectToStreamlabs();
     }
 
@@ -235,14 +234,26 @@ void AutoSceneSwitcher::checkGamePresence()
 
 void AutoSceneSwitcher::connectToStreamlabs()
 {
+    if (connecting) {
+        return;
+    }
+    connecting = true;
+    ui->connectionStatusLabel->setText("Connecting to Streamlabs client API... 🔄");
     connect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
     connect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
-
-    webSocket.open(QUrl("ws://127.0.0.1:59650/api/websocket"));
+    connect(&webSocket, &QWebSocket::disconnected, this, &AutoSceneSwitcher::onDisconnected);
+    QString ipAddress = ui->IPLineEdit->text();
+    if (ipAddress.isEmpty()) {
+        ipAddress = "127.0.0.1";
+    }
+    int port = ui->portSpinBox->value();
+    QString urlString = QString("ws://%1:%2/api/websocket").arg(ipAddress).arg(port);
+    webSocket.open(QUrl(urlString));
 }
 
 void AutoSceneSwitcher::onConnected()
 {
+    connecting = false;
     QJsonObject authParams;
     authParams["resource"] = "TcpServerService";
     authParams["args"] = QJsonArray{ ui->tokenLineEdit->text() };
@@ -260,6 +271,24 @@ void AutoSceneSwitcher::onConnected()
 
     getScenes();
     toggleUi(true);
+    ui->connectionStatusLabel->setText("Connected to Streamlabs client API ✅");
+}
+
+void AutoSceneSwitcher::onDisconnected()
+{
+    connecting = false;
+    qDebug() << "Disconnected from Streamlabs OBS.";
+
+    disconnect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
+    disconnect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
+    disconnect(&webSocket, &QWebSocket::disconnected, this, &AutoSceneSwitcher::onDisconnected);
+
+    toggleUi(false);
+
+    while (isProcessRunning("Streamlabs OBS.exe")) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+    ui->connectionStatusLabel->setText("Not connected to Streamlabs client API ❌");
 }
 
 void AutoSceneSwitcher::getScenes()

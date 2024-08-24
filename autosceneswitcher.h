@@ -35,6 +35,7 @@ private:
     void checkGamePresence();
     void connectToStreamlabs();
     void onConnected();
+    void onDisconnected();
     void onTextMessageReceived(QString message);
     void getScenes();
     void saveSettings();
@@ -56,6 +57,7 @@ private:
     QString gameSceneName;
     QMap<QString, QString> sceneIdMap;
     bool switched;
+    bool connecting;
 };
 
 #endif // AUTOSCENESWITCHER_H
