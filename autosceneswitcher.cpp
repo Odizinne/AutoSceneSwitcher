@@ -1,8 +1,6 @@
 #include "autosceneswitcher.h"
 #include "ui_autosceneswitcher.h"
 #include "shortcutmanager.h"
-#include <thread>
-#include <chrono>
 #include <QApplication>
 #include <QMenu>
 #include <windows.h>
@@ -28,6 +26,7 @@ AutoSceneSwitcher::AutoSceneSwitcher(QWidget *parent)
     , timer(new QTimer(this))
     , switched(false)
     , connecting(false)
+    , paused(false)
 {
     ui->setupUi(this);
     toggleUi(false);
@@ -57,6 +56,7 @@ void AutoSceneSwitcher::setupUiConnections()
     connect(ui->portSpinBox, &QSpinBox::valueChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->startupCheckBox, &QCheckBox::stateChanged, this, &AutoSceneSwitcher::onStartupCheckBoxStateChanged);
     connect(ui->toggleTokenButton, &QToolButton::clicked, this, &AutoSceneSwitcher::toggleTokenView);
+    connect(ui->pauseButton, &QPushButton::clicked, this, &AutoSceneSwitcher::onPauseButtonClicked);
 
     timer->setInterval(1000);
     connect(timer, &QTimer::timeout, this, &AutoSceneSwitcher::checkGamePresence);
@@ -68,6 +68,21 @@ void AutoSceneSwitcher::setupUiConnections()
 void AutoSceneSwitcher::onStartupCheckBoxStateChanged()
 {
     manageShortcut(ui->startupCheckBox->isChecked());
+}
+
+void AutoSceneSwitcher::onPauseButtonClicked()
+{
+    if (paused) {
+        paused = false;
+        timer->start();
+        ui->pauseButton->setText("Pause");
+        connectToStreamlabs();
+    } else {
+        paused = true;
+        timer->stop();
+        ui->pauseButton->setText("Resume");
+        webSocket.close();
+    }
 }
 
 void AutoSceneSwitcher::loadSettings()
@@ -225,6 +240,9 @@ void AutoSceneSwitcher::toggleUi(bool state)
 
 void AutoSceneSwitcher::checkGamePresence()
 {
+    //if (paused) {
+    //    return;
+    //}
 
     if (ui->tokenLineEdit->text().isEmpty()) {
         return;
@@ -301,7 +319,6 @@ void AutoSceneSwitcher::onDisconnected()
 
     toggleUi(false);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     ui->connectionStatusLabel->setText("Not connected to Streamlabs client API ❌");
 }
 
