@@ -17,8 +17,16 @@ HEADERS += \
     autosceneswitcher.h \
     shortcutmanager.h
 
+FORMS += \
+    autosceneswitcher.ui
+
+TRANSLATIONS += \
+    Resources/Tr/AutoSceneSwitcher_fr.ts \
+    Resources/Tr/AutoSceneSwitcher_en.ts
+
 RESOURCES += \
     Resources/resources.qrc
+    Resources/translations.qrc
 
 RC_FILE = Resources/appicon.rc
 
@@ -28,6 +36,3 @@ LIBS += -luser32 -lole32
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-FORMS += \
-    autosceneswitcher.ui

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/translations">
+        <file>Tr/AutoSceneSwitcher_en.qm</file>
+        <file>Tr/AutoSceneSwitcher_fr.qm</file>
+    </qresource>
+</RCC>

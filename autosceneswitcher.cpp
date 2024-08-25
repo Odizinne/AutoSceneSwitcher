@@ -75,12 +75,12 @@ void AutoSceneSwitcher::onPauseButtonClicked()
     if (paused) {
         paused = false;
         timer->start();
-        ui->pauseButton->setText("Pause");
+        ui->pauseButton->setText(tr("Pause"));
         connectToStreamlabs();
     } else {
         paused = true;
         timer->stop();
-        ui->pauseButton->setText("Resume");
+        ui->pauseButton->setText(tr("Resume"));
         webSocket.close();
     }
 }
@@ -137,10 +137,10 @@ void AutoSceneSwitcher::toggleTokenView()
 {
     if (ui->tokenLineEdit->echoMode() == QLineEdit::Password) {
         ui->tokenLineEdit->setEchoMode(QLineEdit::Normal);
-        ui->toggleTokenButton->setText("Hide");
+        ui->toggleTokenButton->setText(tr("Hide"));
     } else {
         ui->tokenLineEdit->setEchoMode(QLineEdit::Password);
-        ui->toggleTokenButton->setText("Show");
+        ui->toggleTokenButton->setText(tr("Show"));
     }
 }
 
@@ -152,10 +152,10 @@ void AutoSceneSwitcher::createTrayIconAndMenu()
 
     QMenu *menu = new QMenu(this);
 
-    QAction *showAction = menu->addAction("Show");
+    QAction *showAction = menu->addAction(tr("Show"));
     connect(showAction, &QAction::triggered, this, &AutoSceneSwitcher::showMainWindow);
 
-    QAction *quitAction = menu->addAction("Quit");
+    QAction *quitAction = menu->addAction(tr("Quit"));
     connect(quitAction, &QAction::triggered, this, &QApplication::quit);
 
     trayIcon->setContextMenu(menu);
@@ -215,7 +215,7 @@ void AutoSceneSwitcher::setSceneById(const QString &sceneId)
 
 void AutoSceneSwitcher::setClientScene()
 {
-    QString clientSceneName = ui->clientLineEdit->text().trimmed();
+    QString clientSceneName = ui->clientLineEdit->text();
     if (sceneIdMap.contains(clientSceneName)) {
         QString sceneId = sceneIdMap[clientSceneName];
         setSceneById(sceneId);
@@ -224,7 +224,7 @@ void AutoSceneSwitcher::setClientScene()
 
 void AutoSceneSwitcher::setGameScene()
 {
-    QString gameSceneName = ui->gameLineEdit->text().trimmed();
+    QString gameSceneName = ui->gameLineEdit->text();
     if (sceneIdMap.contains(gameSceneName)) {
         QString sceneId = sceneIdMap[gameSceneName];
         setSceneById(sceneId);
@@ -240,10 +240,6 @@ void AutoSceneSwitcher::toggleUi(bool state)
 
 void AutoSceneSwitcher::checkGamePresence()
 {
-    //if (paused) {
-    //    return;
-    //}
-
     if (ui->tokenLineEdit->text().isEmpty()) {
         return;
     }
@@ -273,7 +269,7 @@ void AutoSceneSwitcher::connectToStreamlabs()
         return;
     }
     connecting = true;
-    ui->connectionStatusLabel->setText("Connecting to Streamlabs client API... 🔄");
+    ui->connectionStatusLabel->setText(tr("Connecting to Streamlabs client API... 🔄"));
     connect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
     connect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
     connect(&webSocket, &QWebSocket::disconnected, this, &AutoSceneSwitcher::onDisconnected);
@@ -306,7 +302,7 @@ void AutoSceneSwitcher::onConnected()
 
     getScenes();
     toggleUi(true);
-    ui->connectionStatusLabel->setText("Connected to Streamlabs client API ✅");
+    ui->connectionStatusLabel->setText(tr("Connected to Streamlabs client API ✅"));
 }
 
 void AutoSceneSwitcher::onDisconnected()
@@ -319,7 +315,7 @@ void AutoSceneSwitcher::onDisconnected()
 
     toggleUi(false);
 
-    ui->connectionStatusLabel->setText("Not connected to Streamlabs client API ❌");
+    ui->connectionStatusLabel->setText(tr("Not connected to Streamlabs client API ❌"));
 }
 
 void AutoSceneSwitcher::getScenes()
