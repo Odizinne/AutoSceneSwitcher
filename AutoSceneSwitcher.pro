@@ -25,7 +25,7 @@ TRANSLATIONS += \
     Resources/Tr/AutoSceneSwitcher_en.ts
 
 RESOURCES += \
-    Resources/resources.qrc
+    Resources/resources.qrc \
     Resources/translations.qrc
 
 RC_FILE = Resources/appicon.rc

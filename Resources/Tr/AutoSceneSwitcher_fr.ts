@@ -24,27 +24,27 @@
         <location filename="../../autosceneswitcher.ui" line="102"/>
         <location filename="../../autosceneswitcher.cpp" line="322"/>
         <source>Not connected to Streamlabs client API ❌</source>
-        <translation type="unfinished">Non connecté à l&apos;API Streamlabs ❌</translation>
+        <translation>Non connecté à l&apos;API Streamlabs ❌</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="127"/>
         <source>Run at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Lancer au démarrage</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="174"/>
         <source>Scene to activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Scène à activer</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="211"/>
         <source>General settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres généraux</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="251"/>
         <source>Target process</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus ciblé</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="292"/>
@@ -54,48 +54,48 @@
     <message>
         <location filename="../../autosceneswitcher.ui" line="311"/>
         <source>IP/Port</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="348"/>
         <source>Scene settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres des scènes</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="376"/>
         <source>Scene to revert</source>
-        <translation type="unfinished"></translation>
+        <translation>Scène par défaut</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.ui" line="408"/>
         <location filename="../../autosceneswitcher.cpp" line="78"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.cpp" line="83"/>
         <source>Resume</source>
-        <translation type="unfinished"></translation>
+        <translation>Reprendre</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.cpp" line="140"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Masquer</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.cpp" line="158"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.cpp" line="276"/>
         <source>Connecting to Streamlabs client API... 🔄</source>
-        <translation type="unfinished"></translation>
+        <translation>Connexion à l&apos;API du client Streamlabs ... 🔄</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.cpp" line="309"/>
         <source>Connected to Streamlabs client API ✅</source>
-        <translation type="unfinished"></translation>
+        <translation>Connecté à l&apos;API du client Streamlabs ✅</translation>
     </message>
 </context>
 </TS>

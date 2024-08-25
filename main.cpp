@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    QSharedMemory sharedMemory("BigPictureTVUniqueIdentifier");
+    QSharedMemory sharedMemory("AutoSceneSwitcherVitiIsGoodMan");
 
     if (sharedMemory.attach()) {
         return 0;
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     QLocale locale;
     QString languageCode = locale.name().section('_', 0, 0);
     QTranslator translator;
-    if (translator.load(":/translations/Tr/AutoSceneSwitcher" + languageCode + ".qm")) {
+    if (translator.load(":/translations/Tr/AutoSceneSwitcher_" + languageCode + ".qm")) {
         a.installTranslator(&translator);
     }
 
