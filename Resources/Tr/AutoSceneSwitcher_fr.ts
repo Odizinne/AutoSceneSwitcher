@@ -90,12 +90,12 @@
     <message>
         <location filename="../../autosceneswitcher.cpp" line="276"/>
         <source>Connecting to Streamlabs client API... 🔄</source>
-        <translation>Connection à l&apos;API du client Streamlabs ... 🔄</translation>
+        <translation>Connexion à l&apos;API du client Streamlabs ... 🔄</translation>
     </message>
     <message>
         <location filename="../../autosceneswitcher.cpp" line="309"/>
         <source>Connected to Streamlabs client API ✅</source>
-        <translation>Connecté à l&apos;API du client Streamlabs ... 🔄</translation>
+        <translation>Connecté à l&apos;API du client Streamlabs ✅</translation>
     </message>
 </context>
 </TS>
