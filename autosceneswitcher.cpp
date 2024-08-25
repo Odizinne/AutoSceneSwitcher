@@ -215,18 +215,24 @@ void AutoSceneSwitcher::setSceneById(const QString &sceneId)
 
 void AutoSceneSwitcher::setClientScene()
 {
-    QString clientSceneName = ui->clientLineEdit->text();
-    if (sceneIdMap.contains(clientSceneName)) {
-        QString sceneId = sceneIdMap[clientSceneName];
+    QString clientSceneName = ui->clientLineEdit->text().toLower();
+    auto it = std::find_if(sceneIdMap.begin(), sceneIdMap.end(),
+                           [&clientSceneName](const QString &key) { return key.toLower() == clientSceneName; });
+
+    if (it != sceneIdMap.end()) {
+        QString sceneId = it.value();
         setSceneById(sceneId);
     }
 }
 
 void AutoSceneSwitcher::setGameScene()
 {
-    QString gameSceneName = ui->gameLineEdit->text();
-    if (sceneIdMap.contains(gameSceneName)) {
-        QString sceneId = sceneIdMap[gameSceneName];
+    QString gameSceneName = ui->gameLineEdit->text().toLower();
+    auto it = std::find_if(sceneIdMap.begin(), sceneIdMap.end(),
+                           [&gameSceneName](const QString &key) { return key.toLower() == gameSceneName; });
+
+    if (it != sceneIdMap.end()) {
+        QString sceneId = it.value();
         setSceneById(sceneId);
     }
 }
