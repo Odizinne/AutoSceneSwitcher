@@ -77,12 +77,10 @@ void AutoSceneSwitcher::onConnectionStatusButtonClicked()
     if (paused) {
         paused = false;
         timer->start();
-        //ui->pauseButton->setText(tr("Pause"));
         connectToStreamlabs();
     } else {
         paused = true;
         timer->stop();
-        //ui->pauseButton->setText(tr("Resume"));
         webSocket.close();
     }
 }
@@ -225,11 +223,9 @@ void AutoSceneSwitcher::setSceneById(const QString &sceneId)
 void AutoSceneSwitcher::setClientScene()
 {
     QString clientSceneName = ui->clientComboBox->currentText();
-    auto it = std::find_if(sceneIdMap.begin(), sceneIdMap.end(),
-                           [&clientSceneName](const QString &key) { return key == clientSceneName; });
 
-    if (it != sceneIdMap.end()) {
-        QString sceneId = it.value();
+    if (sceneIdMap.contains(clientSceneName)) {
+        QString sceneId = sceneIdMap[clientSceneName];
         setSceneById(sceneId);
     }
 }
@@ -237,14 +233,13 @@ void AutoSceneSwitcher::setClientScene()
 void AutoSceneSwitcher::setGameScene()
 {
     QString gameSceneName = ui->gameComboBox->currentText();
-    auto it = std::find_if(sceneIdMap.begin(), sceneIdMap.end(),
-                           [&gameSceneName](const QString &key) { return key == gameSceneName; });
 
-    if (it != sceneIdMap.end()) {
-        QString sceneId = it.value();
+    if (sceneIdMap.contains(gameSceneName)) {
+        QString sceneId = sceneIdMap[gameSceneName];
         setSceneById(sceneId);
     }
 }
+
 
 void AutoSceneSwitcher::toggleUi(bool state)
 {
@@ -269,6 +264,7 @@ void AutoSceneSwitcher::checkGamePresence()
     }
 
     QString targetProcess = ui->processLineEdit->text();
+
     if (isProcessRunning(targetProcess) && !switched && !ui->processLineEdit->text().isEmpty() && !ui->processLineEdit->hasFocus()) {
         setGameScene();
         switched = true;
