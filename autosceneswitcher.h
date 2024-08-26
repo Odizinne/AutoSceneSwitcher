@@ -48,7 +48,6 @@ private:
     void applySettings();
     void applySceneSettings();
     void setupUiConnections();
-    void populateSceneComboBoxes();
     void toggleUi(bool state);
     void showMainWindow();
 
