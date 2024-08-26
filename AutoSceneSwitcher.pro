@@ -8,27 +8,31 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += \
+    src/AutoSceneSwitcher/ \
+    src/ShortcutManager/
+
 SOURCES += \
-    autosceneswitcher.cpp \
-    shortcutmanager.cpp \
-    main.cpp
+    src/AutoSceneSwitcher/autosceneswitcher.cpp \
+    src/ShortcutManager/shortcutmanager.cpp \
+    src/main.cpp
 
 HEADERS += \
-    autosceneswitcher.h \
-    shortcutmanager.h
+    src/AutoSceneSwitcher/autosceneswitcher.h \
+    src/ShortcutManager/shortcutmanager.h
 
 FORMS += \
-    autosceneswitcher.ui
+    src/AutoSceneSwitcher/autosceneswitcher.ui
 
 TRANSLATIONS += \
-    Resources/Tr/AutoSceneSwitcher_fr.ts \
-    Resources/Tr/AutoSceneSwitcher_en.ts
+    src/Resources/Tr/AutoSceneSwitcher_fr.ts \
+    src/Resources/Tr/AutoSceneSwitcher_en.ts
 
 RESOURCES += \
-    Resources/resources.qrc \
-    Resources/translations.qrc
+    src/Resources/resources.qrc \
+    src/Resources/translations.qrc
 
-RC_FILE = Resources/appicon.rc
+RC_FILE = src/Resources/appicon.rc
 
 LIBS += -luser32 -lole32
 
