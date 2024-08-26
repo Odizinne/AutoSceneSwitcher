@@ -4,98 +4,98 @@
 <context>
     <name>AutoSceneSwitcher</name>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="26"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="26"/>
         <source>Auto Scene Switcher</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="54"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="154"/>
         <source>Streamlabs token</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="77"/>
-        <location filename="../../autosceneswitcher.cpp" line="143"/>
-        <location filename="../../autosceneswitcher.cpp" line="155"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="161"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="152"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="164"/>
         <source>Show</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="102"/>
-        <location filename="../../autosceneswitcher.cpp" line="322"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="66"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="339"/>
         <source>Not connected to Streamlabs client API ❌</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="127"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="232"/>
         <source>Run at startup</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="174"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="282"/>
+        <source>Refresh Scenes</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="355"/>
         <source>Scene to activate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="211"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="47"/>
         <source>General settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="251"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="103"/>
         <source>Target process</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="292"/>
-        <source>127.0.0.1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../autosceneswitcher.ui" line="311"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="219"/>
         <source>IP/Port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="348"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="302"/>
         <source>Scene settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="376"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="387"/>
         <source>Scene to revert</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.ui" line="408"/>
-        <location filename="../../autosceneswitcher.cpp" line="78"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.ui" line="269"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="80"/>
         <source>Pause</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.cpp" line="83"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="85"/>
         <source>Resume</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.cpp" line="140"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="149"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.cpp" line="158"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="167"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.cpp" line="276"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="287"/>
         <source>Connecting to Streamlabs client API... 🔄</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../../autosceneswitcher.cpp" line="309"/>
+        <location filename="../../AutoSceneSwitcher/autosceneswitcher.cpp" line="321"/>
         <source>Connected to Streamlabs client API ✅</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
