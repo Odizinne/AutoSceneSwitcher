@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     }
 
     AutoSceneSwitcher w;
+    a.setStyle("fusion");
     QObject::connect(&a, &QApplication::aboutToQuit, [&sharedMemory]() { sharedMemory.detach(); });
     return a.exec();
 }

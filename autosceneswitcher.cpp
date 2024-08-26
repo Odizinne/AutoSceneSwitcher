@@ -18,6 +18,9 @@
 const QString AutoSceneSwitcher::settingsFile =
     QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/AutoSceneSwitcher/settings.json";
 
+const QString AutoSceneSwitcher::sceneSettingsFile =
+    QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/AutoSceneSwitcher/scene_settings.json";
+
 AutoSceneSwitcher::AutoSceneSwitcher(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AutoSceneSwitcher)
@@ -49,15 +52,14 @@ AutoSceneSwitcher::~AutoSceneSwitcher()
 void AutoSceneSwitcher::setupUiConnections()
 {
     connect(ui->tokenLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
-    connect(ui->clientLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
-    connect(ui->gameLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->processLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->IPLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->portSpinBox, &QSpinBox::valueChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->startupCheckBox, &QCheckBox::stateChanged, this, &AutoSceneSwitcher::onStartupCheckBoxStateChanged);
     connect(ui->toggleTokenButton, &QToolButton::clicked, this, &AutoSceneSwitcher::toggleTokenView);
     connect(ui->pauseButton, &QPushButton::clicked, this, &AutoSceneSwitcher::onPauseButtonClicked);
-
+    connect(ui->refreshScenesButton, &QPushButton::clicked, this, &AutoSceneSwitcher::onRefreshScenesButtonClicked);
+    ui->refreshScenesButton->setDisabled(true);
     timer->setInterval(1000);
     connect(timer, &QTimer::timeout, this, &AutoSceneSwitcher::checkGamePresence);
     timer->start();
@@ -85,6 +87,17 @@ void AutoSceneSwitcher::onPauseButtonClicked()
     }
 }
 
+void AutoSceneSwitcher::onRefreshScenesButtonClicked()
+{
+    if (webSocket.isValid()) {
+        disconnect(ui->gameComboBox, &QComboBox::currentTextChanged, this, &AutoSceneSwitcher::saveSceneSettings);
+        disconnect(ui->clientComboBox, &QComboBox::currentTextChanged, this, &AutoSceneSwitcher::saveSceneSettings);
+        ui->gameComboBox->clear();
+        ui->clientComboBox->clear();
+        getScenes();
+    }
+}
+
 void AutoSceneSwitcher::loadSettings()
 {
     QDir settingsDir(QFileInfo(settingsFile).absolutePath());
@@ -108,8 +121,6 @@ void AutoSceneSwitcher::loadSettings()
 void AutoSceneSwitcher::applySettings()
 {
     ui->tokenLineEdit->setText(settings.value("streamlabsToken").toString());
-    ui->clientLineEdit->setText(settings.value("clientScene").toString());
-    ui->gameLineEdit->setText(settings.value("gameScene").toString());
     ui->processLineEdit->setText(settings.value("targetProcess").toString());
     ui->IPLineEdit->setText(settings.value("ipAddress").toString());
     ui->portSpinBox->setValue(settings.value("port").toInt());
@@ -119,8 +130,6 @@ void AutoSceneSwitcher::applySettings()
 void AutoSceneSwitcher::saveSettings()
 {
     settings["streamlabsToken"] = ui->tokenLineEdit->text();
-    settings["clientScene"] = ui->clientLineEdit->text();
-    settings["gameScene"] = ui->gameLineEdit->text();
     settings["targetProcess"] = ui->processLineEdit->text();
     settings["ipAddress"] = ui->IPLineEdit->text();
     settings["port"] = ui->portSpinBox->value();
@@ -215,9 +224,9 @@ void AutoSceneSwitcher::setSceneById(const QString &sceneId)
 
 void AutoSceneSwitcher::setClientScene()
 {
-    QString clientSceneName = ui->clientLineEdit->text().toLower();
+    QString clientSceneName = ui->clientComboBox->currentText();
     auto it = std::find_if(sceneIdMap.begin(), sceneIdMap.end(),
-                           [&clientSceneName](const QString &key) { return key.toLower() == clientSceneName; });
+                           [&clientSceneName](const QString &key) { return key == clientSceneName; });
 
     if (it != sceneIdMap.end()) {
         QString sceneId = it.value();
@@ -227,9 +236,9 @@ void AutoSceneSwitcher::setClientScene()
 
 void AutoSceneSwitcher::setGameScene()
 {
-    QString gameSceneName = ui->gameLineEdit->text().toLower();
+    QString gameSceneName = ui->gameComboBox->currentText();
     auto it = std::find_if(sceneIdMap.begin(), sceneIdMap.end(),
-                           [&gameSceneName](const QString &key) { return key.toLower() == gameSceneName; });
+                           [&gameSceneName](const QString &key) { return key == gameSceneName; });
 
     if (it != sceneIdMap.end()) {
         QString sceneId = it.value();
@@ -240,8 +249,8 @@ void AutoSceneSwitcher::setGameScene()
 void AutoSceneSwitcher::toggleUi(bool state)
 {
     ui->sceneSettingsLabel->setEnabled(state);
-    ui->clientFrame->setEnabled(state);
-    ui->gameFrame->setEnabled(state);
+    ui->sceneFrame->setEnabled(state);
+    ui->refreshScenesButton->setEnabled(state);
 }
 
 void AutoSceneSwitcher::checkGamePresence()
@@ -279,6 +288,7 @@ void AutoSceneSwitcher::connectToStreamlabs()
     connect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
     connect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
     connect(&webSocket, &QWebSocket::disconnected, this, &AutoSceneSwitcher::onDisconnected);
+
     QString ipAddress = ui->IPLineEdit->text();
     if (ipAddress.isEmpty()) {
         ipAddress = "127.0.0.1";
@@ -318,7 +328,12 @@ void AutoSceneSwitcher::onDisconnected()
     disconnect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
     disconnect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
     disconnect(&webSocket, &QWebSocket::disconnected, this, &AutoSceneSwitcher::onDisconnected);
+    disconnect(ui->gameComboBox, &QComboBox::currentTextChanged, this, &AutoSceneSwitcher::saveSceneSettings);
+    disconnect(ui->clientComboBox, &QComboBox::currentTextChanged, this, &AutoSceneSwitcher::saveSceneSettings);
+    ui->refreshScenesButton->setDisabled(true);
 
+    ui->clientComboBox->clear();
+    ui->gameComboBox->clear();
     toggleUi(false);
 
     ui->connectionStatusLabel->setText(tr("Not connected to Streamlabs client API ❌"));
@@ -326,6 +341,10 @@ void AutoSceneSwitcher::onDisconnected()
 
 void AutoSceneSwitcher::getScenes()
 {
+    if (!webSocket.isValid()) {
+        return;
+    }
+
     QJsonObject params;
     params["resource"] = "ScenesService";
 
@@ -361,8 +380,46 @@ void AutoSceneSwitcher::onTextMessageReceived(QString message)
                 QString sceneName = sceneObj["name"].toString();
 
                 sceneIdMap[sceneName] = sceneId;
+                ui->gameComboBox->addItem(sceneName);
+                ui->clientComboBox->addItem(sceneName);
             }
+            loadSceneSettings();
+            connect(ui->gameComboBox, &QComboBox::currentTextChanged, this, &AutoSceneSwitcher::saveSceneSettings);
+            connect(ui->clientComboBox, &QComboBox::currentTextChanged, this, &AutoSceneSwitcher::saveSceneSettings);
+            ui->refreshScenesButton->setEnabled(true);
         }
     }
 }
 
+void AutoSceneSwitcher::saveSceneSettings()
+{
+    sceneSettings["clientScene"] = ui->clientComboBox->currentText();
+    sceneSettings["gameScene"] = ui->gameComboBox->currentText();
+
+    QFile file(sceneSettingsFile);
+    if (file.open(QIODevice::WriteOnly)) {
+        QJsonDocument doc(sceneSettings);
+        file.write(doc.toJson());
+        file.close();
+    }
+}
+
+void AutoSceneSwitcher::loadSceneSettings()
+{
+    QFile file(sceneSettingsFile);
+    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        sceneSettings = doc.object();
+        file.close();
+    } else {
+        saveSceneSettings();
+    }
+
+    applySceneSettings();
+}
+
+void AutoSceneSwitcher::applySceneSettings()
+{
+    ui->clientComboBox->setCurrentText(sceneSettings.value("clientScene").toString());
+    ui->gameComboBox->setCurrentText(sceneSettings.value("gameScene").toString());
+}

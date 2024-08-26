@@ -16,12 +16,14 @@ You can grab latest release [here](https://github.com/Odizinne/AutoSceneSwitcher
 
 - Get your streamlabs token:
 
+<img src="assets/token.png" alt="image" width="440"/>
+
 Go to streamlabs settings -> remote control -> click on the QR code -> click show details
 Copy the API token and paste it inside `Streamlabs token`
 
 - Set target process
 
-Type the process name you're looking for to automate scene switch
+Type the process name you're looking for to automate scene switch  
 Ex: `League of legends.exe`
 
 - Set IP/Port
@@ -38,8 +40,6 @@ Defaults:
 `Scene to activate`: This scene will be set as active when process is found.  
 `Scene to revert`: this scene will be set as active when process is no more found.
 
-Type the exact scene name.
-
-You're good to go.
+**You're good to go.**
 
 You can close the window, AutoSceneSwitcher will run in the background.

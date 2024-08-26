@@ -26,6 +26,7 @@ private slots:
     void onStartupCheckBoxStateChanged();
     void toggleTokenView();
     void onPauseButtonClicked();
+    void onRefreshScenesButtonClicked();
 
 private:
     Ui::AutoSceneSwitcher *ui;
@@ -41,16 +42,21 @@ private:
     void onTextMessageReceived(QString message);
     void getScenes();
     void saveSettings();
+    void saveSceneSettings();
     void loadSettings();
+    void loadSceneSettings();
     void applySettings();
+    void applySceneSettings();
     void setupUiConnections();
-    void populateComboBoxes();
+    void populateSceneComboBoxes();
     void toggleUi(bool state);
     void showMainWindow();
 
     bool firstRun;
     QJsonObject settings;
+    QJsonObject sceneSettings;
     static const QString settingsFile;
+    static const QString sceneSettingsFile;
     QSystemTrayIcon *trayIcon;
     QTimer *timer;
     QWebSocket webSocket;
