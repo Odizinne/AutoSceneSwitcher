@@ -42,4 +42,6 @@ Defaults:
 
 **You're good to go.**
 
+Connection to Streamlabs Client API is automated. You can manually disconnect / reconnect by pressing the connection status button.
+
 You can close the window, AutoSceneSwitcher will run in the background.

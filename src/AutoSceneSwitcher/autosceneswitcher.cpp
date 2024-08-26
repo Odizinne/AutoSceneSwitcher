@@ -57,7 +57,7 @@ void AutoSceneSwitcher::setupUiConnections()
     connect(ui->portSpinBox, &QSpinBox::valueChanged, this, &AutoSceneSwitcher::saveSettings);
     connect(ui->startupCheckBox, &QCheckBox::stateChanged, this, &AutoSceneSwitcher::onStartupCheckBoxStateChanged);
     connect(ui->toggleTokenButton, &QToolButton::clicked, this, &AutoSceneSwitcher::toggleTokenView);
-    connect(ui->pauseButton, &QPushButton::clicked, this, &AutoSceneSwitcher::onPauseButtonClicked);
+    connect(ui->connectionStatusButton, &QToolButton::clicked, this, &AutoSceneSwitcher::onConnectionStatusButtonClicked);
     connect(ui->refreshScenesButton, &QPushButton::clicked, this, &AutoSceneSwitcher::onRefreshScenesButtonClicked);
     ui->refreshScenesButton->setDisabled(true);
     timer->setInterval(1000);
@@ -72,17 +72,17 @@ void AutoSceneSwitcher::onStartupCheckBoxStateChanged()
     manageShortcut(ui->startupCheckBox->isChecked());
 }
 
-void AutoSceneSwitcher::onPauseButtonClicked()
+void AutoSceneSwitcher::onConnectionStatusButtonClicked()
 {
     if (paused) {
         paused = false;
         timer->start();
-        ui->pauseButton->setText(tr("Pause"));
+        //ui->pauseButton->setText(tr("Pause"));
         connectToStreamlabs();
     } else {
         paused = true;
         timer->stop();
-        ui->pauseButton->setText(tr("Resume"));
+        //ui->pauseButton->setText(tr("Resume"));
         webSocket.close();
     }
 }
@@ -284,7 +284,7 @@ void AutoSceneSwitcher::connectToStreamlabs()
         return;
     }
     connecting = true;
-    ui->connectionStatusLabel->setText(tr("Connecting to Streamlabs client API... 🔄"));
+    ui->connectionStatusButton->setText(tr("Connecting to Streamlabs client API... 🔄"));
     connect(&webSocket, &QWebSocket::connected, this, &AutoSceneSwitcher::onConnected);
     connect(&webSocket, &QWebSocket::textMessageReceived, this, &AutoSceneSwitcher::onTextMessageReceived);
     connect(&webSocket, &QWebSocket::disconnected, this, &AutoSceneSwitcher::onDisconnected);
@@ -318,7 +318,7 @@ void AutoSceneSwitcher::onConnected()
 
     getScenes();
     toggleUi(true);
-    ui->connectionStatusLabel->setText(tr("Connected to Streamlabs client API ✅"));
+    ui->connectionStatusButton->setText(tr("Connected to Streamlabs client API ✅"));
 }
 
 void AutoSceneSwitcher::onDisconnected()
@@ -336,7 +336,7 @@ void AutoSceneSwitcher::onDisconnected()
     ui->gameComboBox->clear();
     toggleUi(false);
 
-    ui->connectionStatusLabel->setText(tr("Not connected to Streamlabs client API ❌"));
+    ui->connectionStatusButton->setText(tr("Not connected to Streamlabs client API ❌"));
 }
 
 void AutoSceneSwitcher::getScenes()

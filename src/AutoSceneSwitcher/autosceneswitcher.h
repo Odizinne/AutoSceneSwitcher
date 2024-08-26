@@ -25,7 +25,7 @@ public:
 private slots:
     void onStartupCheckBoxStateChanged();
     void toggleTokenView();
-    void onPauseButtonClicked();
+    void onConnectionStatusButtonClicked();
     void onRefreshScenesButtonClicked();
 
 private:
