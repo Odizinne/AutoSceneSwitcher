@@ -16,7 +16,7 @@ You can grab latest release [here](https://github.com/Odizinne/AutoSceneSwitcher
 
 - Get your streamlabs token:
 
-<img src="assets/token.png" alt="image" width="440"/>
+<img src="assets/token.png" alt="image" width="450"/>
 
 Go to streamlabs settings -> remote control -> click on the QR code -> click show details
 Copy the API token and paste it inside `Streamlabs token`
