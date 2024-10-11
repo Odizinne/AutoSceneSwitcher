@@ -50,6 +50,7 @@ private:
     void setupUiConnections();
     void toggleUi(bool state);
     void showMainWindow();
+    void logMessage(const QString &message);
 
     bool firstRun;
     QJsonObject settings;

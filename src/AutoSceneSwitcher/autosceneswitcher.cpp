@@ -49,6 +49,18 @@ AutoSceneSwitcher::~AutoSceneSwitcher()
     delete ui;
 }
 
+void AutoSceneSwitcher::logMessage(const QString &message)
+{
+    QString logFilePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/AutoSceneSwitcher/log.txt";
+    QFile logFile(logFilePath);
+
+    if (logFile.open(QIODevice::Append | QIODevice::Text)) {
+        QTextStream out(&logFile);
+        out << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss") << " - " << message << "\n";
+        logFile.close();
+    }
+}
+
 void AutoSceneSwitcher::setupUiConnections()
 {
     connect(ui->tokenLineEdit, &QLineEdit::textChanged, this, &AutoSceneSwitcher::saveSettings);
@@ -204,6 +216,7 @@ bool AutoSceneSwitcher::isProcessRunning(const QString& processName)
 
 void AutoSceneSwitcher::setSceneById(const QString &sceneId)
 {
+    logMessage("Attempting to switch to scene with ID: " + sceneId);
     QJsonObject params;
     params["resource"] = "ScenesService";
     params["args"] = QJsonArray{ sceneId };
@@ -266,10 +279,12 @@ void AutoSceneSwitcher::checkGamePresence()
     QString targetProcess = ui->processLineEdit->text();
 
     if (isProcessRunning(targetProcess) && !switched && !ui->processLineEdit->text().isEmpty() && !ui->processLineEdit->hasFocus()) {
+        logMessage("Game process found: " + targetProcess + ". Switching to game scene.");
         setGameScene();
         switched = true;
     } else if (!isProcessRunning(targetProcess) && switched) {
         setClientScene();
+        logMessage("Game process not found. Switching to client scene.");
         switched = false;
     }
 }
